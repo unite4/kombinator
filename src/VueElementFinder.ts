@@ -10,10 +10,10 @@ export abstract class VueElementFinder {
   protected template = '';
   protected modifiedCode = '';
 
-  protected findElement(code: string): { element: { startIndex: number; endIndex: number } } {
-    let element: { startIndex: number; endIndex: number } | null = null;
+  protected findElement(code: string): { element: { startIndex: number; endIndex: number; tagNameStartIndex?: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } } {
+    let element: { startIndex: number; endIndex: number; tagNameStartIndex?: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } | null = null;
     if (this.findBy === 'tagName') {
-      element = this.findElementByTag(code, element);
+      element = this.findElementByTag(code, element) as { startIndex: number; endIndex: number; tagNameStartIndex: number; tagNameEndIndex: number };
     } else if (this.findBy === 'attributeValue') {
       element = this.findElementByAttributeValue(code, element);
     } else if (this.findBy === 'attribute') {
@@ -24,8 +24,73 @@ export abstract class VueElementFinder {
     if (!element) {
       throw new Error('Failed to find element in template.');
     }
-    return { element };
+  
+    // Find tag name and closing tag indices
+    const { tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } = this.findTagIndices(code, element.startIndex, element.endIndex);
+
+    return { element: { ...element, tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } };
+    
   }
+
+  private findTagIndices(code: string, startIndex: number, endIndex: number) {
+    const stack: { name: string; startIndex: number; endIndex: number }[] = [];
+    let tagMatch;
+    let closingTagMatch;
+    let tagNameStartIndex: number | undefined;
+    let tagNameEndIndex: number | undefined;
+    let closingTagStartIndex: number | undefined;
+    let closingTagEndIndex: number | undefined;
+  
+    for (let i = startIndex; i < code.length; i++) {
+      const char = code[i];
+      if (char === '<') {
+        const nextChar = code[i + 1];
+        if (nextChar === '/') {
+          closingTagMatch = code.slice(i).match(/<\/([^>\s/]*)(?:\s[^>]*)?>/);
+          if (closingTagMatch && stack.length && stack[stack.length - 1].name === closingTagMatch[1]) {
+            const nestedElement = stack.pop();
+            if (nestedElement) {
+              closingTagStartIndex = i;
+              closingTagEndIndex = closingTagStartIndex + closingTagMatch[0].length;
+              if (!stack.length) {
+                tagNameStartIndex = nestedElement.startIndex;
+                tagNameEndIndex = nestedElement.endIndex;
+                break;
+              }
+            }
+          }
+        } else if (nextChar !== '!' && nextChar !== '?') {
+          tagMatch = code.slice(i).match(/<([^>\s/]*)(?:\s[^>]*)?\/?>/);
+          if (tagMatch) {
+            const name = tagMatch[1];
+            const tagStartIndex = i;
+            const tagEndIndex = tagStartIndex + tagMatch[0].length;
+            stack.push({ name, startIndex: tagStartIndex, endIndex: tagEndIndex });
+            if (tagMatch[0].endsWith('/>')) {
+              // Adjust stack to account for self-closing tag
+              const nestedElement = stack.pop();
+              if (nestedElement) {
+                const closingTagStartIndex = nestedElement.endIndex - 2;
+                const closingTagEndIndex = nestedElement.endIndex;
+                if (!stack.length) {
+                  tagNameStartIndex = nestedElement.startIndex;
+                  tagNameEndIndex = nestedElement.endIndex;
+                  closingTagStartIndex;
+                  closingTagEndIndex;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  
+    return { tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex };
+  }
+  
+  
+  
 
   private findElementByTag(code: string, element: { startIndex: number; endIndex: number; } | null) {
     if(!this.findByOptions?.tagName) {
