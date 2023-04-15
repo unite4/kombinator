@@ -88,9 +88,6 @@ export abstract class VueElementFinder {
   
     return { tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex };
   }
-  
-  
-  
 
   private findElementByTag(code: string, element: { startIndex: number; endIndex: number; } | null) {
     if(!this.findByOptions?.tagName) {

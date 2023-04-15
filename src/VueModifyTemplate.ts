@@ -38,7 +38,7 @@ export class VueModifyTemplate extends VueElementFinder {
 
   private insertHtml(html: string, before: boolean): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
-    const index = before ? element.startIndex : element.closingTagEndIndex;
+    const index = before ? element.startIndex : element.closingTagEndIndex ?? element.endIndex;
     this.modifiedCode = `${this.modifiedCode.slice(0, index)}${html}${this.modifiedCode.slice(index)}`;
     return this;
   }
@@ -69,4 +69,13 @@ export class VueModifyTemplate extends VueElementFinder {
     this.modifiedCode = `${beforeInnerHTML}${this.modifiedCode.slice(innerHTMLStart, innerHTMLEnd)}${afterInnerHTML}`;
     return this;
   }
+
+  public insertInside(html: string): VueModifyTemplate {
+    const { element } = this.findElement(this.modifiedCode);
+    if (!element.closingTagStartIndex) {
+      throw new Error('insertInside wokrs only with tags with closing tag');
+    }
+    this.modifiedCode = `${this.modifiedCode.slice(0, element.closingTagStartIndex)}${html}${this.modifiedCode.slice(element.closingTagStartIndex)}`;
+    return this;
+  }  
 }

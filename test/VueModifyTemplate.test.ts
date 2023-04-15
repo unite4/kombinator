@@ -12,6 +12,7 @@ describe('VueModifyTemplate', () => {
         <template>
           <div class="container">
             <h1>Hello, world!</h1>
+            <component/>
             <p>Lorem ipsum dolor sit amet.</p>
           </div>
         </template>
@@ -26,6 +27,7 @@ describe('VueModifyTemplate', () => {
         <template>
           <div class="container">
 
+            <component/>
             <p>Lorem ipsum dolor sit amet.</p>
           </div>
         </template>
@@ -42,6 +44,7 @@ describe('VueModifyTemplate', () => {
         <template>
           <div class="container">
             <h2>Greetings, earthlings!</h2><h1>Hello, world!</h1>
+            <component/>
             <p>Lorem ipsum dolor sit amet.</p>
           </div>
         </template>
@@ -58,11 +61,27 @@ describe('VueModifyTemplate', () => {
         <template>
           <div class="container">
             <h1>Hello, world!</h1><h2>Greetings, earthlings!</h2>
+            <component/>
             <p>Lorem ipsum dolor sit amet.</p>
           </div>
         </template>
       `);
       const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('h1').insertAfter('<h2>Greetings, earthlings!</h2>');
+      const modifiedTemplate = modifier.getTemplate();
+      expect(modifiedTemplate).toBe(expectedTemplate);
+    });
+
+    it('inserts HTML after the self closing element', () => {
+      const expectedTemplate = trimMultilineString(`
+        <template>
+          <div class="container">
+            <h1>Hello, world!</h1>
+            <component/><h2>Greetings, earthlings!</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+          </div>
+        </template>
+      `);
+      const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('component').insertAfter('<h2>Greetings, earthlings!</h2>');
       const modifiedTemplate = modifier.getTemplate();
       expect(modifiedTemplate).toBe(expectedTemplate);
     });
@@ -74,6 +93,7 @@ describe('VueModifyTemplate', () => {
         <template>
 
             <h1>Hello, world!</h1>
+            <component/>
             <p>Lorem ipsum dolor sit amet.</p>
 
         </template>
@@ -83,16 +103,13 @@ describe('VueModifyTemplate', () => {
       expect(modifiedTemplate).toBe(expectedTemplate);
     });
     it('works like remove for self closing tags', () => {
-      const template = trimMultilineString(`
-        <template>
-          <h1>Hello, world!</h1>
-          <component/>
-        </template>
-      `);
       const expectedTemplate = trimMultilineString(`
         <template>
-          <h1>Hello, world!</h1>
+          <div class="container">
+            <h1>Hello, world!</h1>
 
+            <p>Lorem ipsum dolor sit amet.</p>
+          </div>
         </template>
       `);
       const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('component').unwrap();
@@ -101,4 +118,47 @@ describe('VueModifyTemplate', () => {
     });
 
   });
+
+  describe('insertInside', () => {
+    it('should insert HTML into the element', () => {
+      const expected = trimMultilineString(`
+        <template>
+          <div class="container">
+            <h1>Hello, world!</h1>
+            <component/>
+            <p>Lorem ipsum dolor sit amet.<strong>bold text</strong></p>
+          </div>
+        </template>
+      `, false);
+      const modifier = new VueModifyTemplate().fromTemplate(trimMultilineString(template, false)).findByTag('p').insertInside("<strong>bold text</strong>");
+      const result = modifier.getTemplate();
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('possibility to wrap', () => {
+    it('shall be possible to wrap few elements', () => {
+      const template = trimMultilineString(`
+        <template>
+          <h1>Hello, world!</h1>
+          <component/>
+        </template>
+      `);
+      const expectedTemplate = trimMultilineString(`
+        <template>
+          <div class="container"><h1>Hello, world!</h1>
+          <component/></div>
+        </template>
+      `);
+      const modifier = new VueModifyTemplate().fromTemplate(template)
+        .findByTag('h1')
+        .insertBefore('<div class="container">')
+        .findByTag('component')
+        .insertAfter('</div>');
+      const modifiedTemplate = modifier.getTemplate();
+      expect(modifiedTemplate).toBe(expectedTemplate);
+    });
+
+  });
+
 });
