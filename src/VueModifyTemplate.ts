@@ -73,7 +73,7 @@ export class VueModifyTemplate extends VueElementFinder {
   public insertInside(html: string): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     if (!element.closingTagStartIndex) {
-      throw new Error('insertInside wokrs only with tags with closing tag');
+      throw new Error('insertInside does not support self closing tags');
     }
     this.modifiedCode = `${this.modifiedCode.slice(0, element.closingTagStartIndex)}${html}${this.modifiedCode.slice(element.closingTagStartIndex)}`;
     return this;

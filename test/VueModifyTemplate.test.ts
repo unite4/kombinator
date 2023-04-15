@@ -129,10 +129,17 @@ describe('VueModifyTemplate', () => {
             <p>Lorem ipsum dolor sit amet.<strong>bold text</strong></p>
           </div>
         </template>
-      `, false);
-      const modifier = new VueModifyTemplate().fromTemplate(trimMultilineString(template, false)).findByTag('p').insertInside("<strong>bold text</strong>");
+      `);
+      const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('p').insertInside("<strong>bold text</strong>");
       const result = modifier.getTemplate();
       expect(result).toBe(expected);
+    });
+
+    it('does not support self closing tags', () => {            
+      expect(()=>{
+        const modifier = new VueModifyTemplate().fromTemplate(trimMultilineString(template, false)).findByTag('component').insertInside("<strong>bold text</strong>");
+        modifier.getTemplate();
+      }).toThrowError("insertInside does not support self closing tags");
     });
   });
 
