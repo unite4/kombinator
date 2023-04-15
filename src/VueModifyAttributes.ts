@@ -1,6 +1,6 @@
-import { VueElementFinder } from "./VueElementFinder";
+import { VueModifyTemplate } from "./VueModifyTemplate";
 
-export class VueModifyAttributes extends VueElementFinder {
+export class VueModifyAttributes extends VueModifyTemplate {
   public fromTemplate(template: string): VueModifyAttributes {
     super.fromTemplate(template);
     return this;

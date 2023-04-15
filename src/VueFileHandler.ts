@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-class VueFileHandler {
+export class VueFileHandler {
   private directories: string[];
   private filePath: string | null = null;
   private fileName: string | null = null;
@@ -12,8 +12,11 @@ class VueFileHandler {
     this.directories = directories;
   }
 
-  loadVueFile(fileName: string): void {
+  
+  loadVueFile(fileName: string): VueFileHandler {
+    fileName+=this.getVueExt(fileName);
     this.fileName = fileName;
+    
     const filePathParts = fileName.split('/');
     for (const directory of this.directories) {
       const fullPath = [...filePathParts];
@@ -29,6 +32,14 @@ class VueFileHandler {
     if (!this.filePath) {
       throw new Error(`File ${fileName} not found in ${this.directories.join(', ')}`);
     }
+    return this;
+  }
+
+  private getVueExt(fileName: string): string {
+    if(fileName.endsWith('.vue')) {
+      return '';
+    }
+    return '.vue';
   }
 
   getTemplateAsString(): string {
@@ -39,11 +50,12 @@ class VueFileHandler {
     return templateMatch[1].trim();
   }
 
-  setNewTemplate(newTemplateString: string): void {
+  setNewTemplate(newTemplateString: string): VueFileHandler {
     this.newFileContent = this.fileContent?.replace(/<template>[\s\S]*<\/template>/, `<template>\n${newTemplateString}\n</template>`) ?? null;
+    return this;
   }
 
-  addTemplateComment(comment: string): void {
+  addTemplateComment(comment: string): VueFileHandler {
     if(!this.newFileContent) {
       throw new Error("Set new template first");
     }
@@ -54,11 +66,14 @@ class VueFileHandler {
     const templateContent = templateMatch[1];
     const newTemplateContent = templateContent + `\n<!-- Kombinator: ${comment} -->\n`;
     this.newFileContent = this.newFileContent.replace(templateContent, newTemplateContent);
+    return this;
   }
 
   write(newFilePath?: string): void {
     if (!newFilePath) {
       newFilePath = this.fileName!;
+    } else {
+      newFilePath+=this.getVueExt(newFilePath);
     }
 
     const firstDirectory = this.directories[0];

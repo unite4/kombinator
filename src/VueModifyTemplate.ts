@@ -70,6 +70,11 @@ export class VueModifyTemplate extends VueElementFinder {
     return this;
   }
 
+  public getElementCode(): string {
+    const { element } = this.findElement(this.modifiedCode);
+    return this.modifiedCode.slice(element.startIndex, element.closingTagEndIndex ?? element.endIndex);
+  }
+
   public insertInside(html: string): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     if (!element.closingTagStartIndex) {

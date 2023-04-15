@@ -143,6 +143,22 @@ describe('VueModifyTemplate', () => {
     });
   });
 
+  describe('getElementCode', () => {
+    it('returns the code for the selected element', () => {
+      const template = `
+        <div>
+          <p>Hello</p>
+          <span>world</span>
+        </div>
+      `;
+      const modifier = new VueModifyTemplate();
+      const element = modifier.fromTemplate(template).findByTag('p');
+      const code = element.getElementCode();
+  
+      expect(code).toEqual('<p>Hello</p>');
+    });
+  });  
+
   describe('possibility to wrap', () => {
     it('shall be possible to wrap few elements', () => {
       const template = trimMultilineString(`
