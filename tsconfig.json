@@ -5,7 +5,8 @@
     "outDir": "dist",
     "types": ["jest"],
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"
