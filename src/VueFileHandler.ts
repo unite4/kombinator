@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { sync as globSync } from 'glob';
 
 export class VueFileHandler {
   private directories: string[];
@@ -34,45 +35,28 @@ export class VueFileHandler {
   }
 
   loadComponent(componentName: string): VueFileHandler {
-    const fileName = `${componentName}.vue`;
-    const filePathParts = fileName.split('/');
-
+    let fileNames = [
+      `${componentName}.vue`,
+      `${componentName.split('-').map(word => word[0].toUpperCase() + word.slice(1)).join('')}.vue`, // from my-component.vue to MyComponent.vue
+    ];
+  
     for (const directory of this.directories) {
-      const fullPath = [...filePathParts];
-      fullPath.unshift(directory);
-      const filePath = path.join(...fullPath);
-
-      if (fs.existsSync(filePath)) {
+      const pattern = `**/{${fileNames.join(',')}}`;
+      const filePaths = globSync(pattern, { cwd: directory, nodir: true });
+  
+      if (filePaths.length > 0) {
+        const filePath = path.join(directory, filePaths[0]);
         this.filePath = filePath;
-        this.fileName = fileName;
-        this.fileContent = fs.readFileSync(this.filePath, 'utf8');
-        break;
-      }
-
-      const subdirectories = fs
-        .readdirSync(directory, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => path.join(directory, dirent.name));
-
-      for (const subdirectory of subdirectories) {
-        const subdirectoryPath = path.join(subdirectory, fileName);
-        if (fs.existsSync(subdirectoryPath)) {
-          this.filePath = subdirectoryPath;
-          this.fileName = fileName;
-          this.fileContent = fs.readFileSync(this.filePath, 'utf8');
-          break;
-        }
-      }
-
-      if (this.filePath) {
+        this.fileName = path.basename(filePath);
+        this.fileContent = fs.readFileSync(filePath, 'utf8');
         break;
       }
     }
-
+  
     if (!this.filePath) {
       throw new Error(`Component ${componentName} not found in ${this.directories.join(', ')}`);
     }
-
+  
     return this;
   }
 

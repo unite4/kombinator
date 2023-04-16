@@ -32,9 +32,21 @@ describe('VueFileHandler', () => {
     expect(templateString).toBe('<div>Hello world</div>');
   });
 
-  it('should find component by part of the filename', () => {
+  it('should find component by name', () => {
     const vueFile = new VueFileHandler([generatedDir, coreDir]);
     vueFile.loadComponent('my-component');
+    const templateString = vueFile.getTemplateAsString();
+
+    expect(templateString).toBe('<div>Hello world</div>');
+  });
+
+  it('should find component with dashes and TitleCased file', () => {    
+    const filePath = path.join(path.join(coreDir, 'subdirectory', 'deeper', 'TitleCasedComponent.vue'));
+    const fileContent = '<template>\n<div>Hello world</div>\n</template>';
+    fs.mkdirSync(path.join(coreDir, 'subdirectory', 'deeper'))
+    fs.writeFileSync(filePath, fileContent, 'utf8');
+    const vueFile = new VueFileHandler([generatedDir, coreDir]);
+    vueFile.loadComponent('title-cased-component');
     const templateString = vueFile.getTemplateAsString();
 
     expect(templateString).toBe('<div>Hello world</div>');
