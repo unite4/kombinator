@@ -11,10 +11,8 @@ export class VueFileHandler {
   constructor(directories: string[]) {
     this.directories = directories;
   }
-
   
   loadVueFile(fileName: string): VueFileHandler {
-    fileName+=this.getVueExt(fileName);
     this.fileName = fileName;
     
     const filePathParts = fileName.split('/');
@@ -35,11 +33,47 @@ export class VueFileHandler {
     return this;
   }
 
-  private getVueExt(fileName: string): string {
-    if(fileName.endsWith('.vue')) {
-      return '';
+  loadComponent(componentName: string): VueFileHandler {
+    const fileName = `${componentName}.vue`;
+    const filePathParts = fileName.split('/');
+
+    for (const directory of this.directories) {
+      const fullPath = [...filePathParts];
+      fullPath.unshift(directory);
+      const filePath = path.join(...fullPath);
+
+      if (fs.existsSync(filePath)) {
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.fileContent = fs.readFileSync(this.filePath, 'utf8');
+        break;
+      }
+
+      const subdirectories = fs
+        .readdirSync(directory, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => path.join(directory, dirent.name));
+
+      for (const subdirectory of subdirectories) {
+        const subdirectoryPath = path.join(subdirectory, fileName);
+        if (fs.existsSync(subdirectoryPath)) {
+          this.filePath = subdirectoryPath;
+          this.fileName = fileName;
+          this.fileContent = fs.readFileSync(this.filePath, 'utf8');
+          break;
+        }
+      }
+
+      if (this.filePath) {
+        break;
+      }
     }
-    return '.vue';
+
+    if (!this.filePath) {
+      throw new Error(`Component ${componentName} not found in ${this.directories.join(', ')}`);
+    }
+
+    return this;
   }
 
   getTemplateAsString(): string {
@@ -72,9 +106,7 @@ export class VueFileHandler {
   write(newFilePath?: string): void {
     if (!newFilePath) {
       newFilePath = this.fileName!;
-    } else {
-      newFilePath+=this.getVueExt(newFilePath);
-    }
+    } 
 
     const firstDirectory = this.directories[0];
     const newDirectoryPath = newFilePath.split('/').slice(0, -1).join('/');

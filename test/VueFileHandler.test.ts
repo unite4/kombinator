@@ -32,6 +32,14 @@ describe('VueFileHandler', () => {
     expect(templateString).toBe('<div>Hello world</div>');
   });
 
+  it('should find component by part of the filename', () => {
+    const vueFile = new VueFileHandler([generatedDir, coreDir]);
+    vueFile.loadComponent('my-component');
+    const templateString = vueFile.getTemplateAsString();
+
+    expect(templateString).toBe('<div>Hello world</div>');
+  });
+
   it('should set a new template string', () => {
     const vueFile = new VueFileHandler([generatedDir, coreDir]);
     vueFile.loadVueFile('subdirectory/my-component.vue');
