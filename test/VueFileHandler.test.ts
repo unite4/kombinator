@@ -75,7 +75,7 @@ describe('VueFileHandler', () => {
     vueFileOut.loadVueFile('subdirectory/my-component.vue');
     const templateString = vueFileOut.getTemplateAsString();
     fs.unlinkSync(path.join(generatedDir, 'subdirectory/my-component.vue'));
-    expect(templateString).toBe('<div>New template</div>\n\n<!-- Kombinator: This is a comment -->');
+    expect(templateString).toBe('<div>New template</div>\n<!-- Kombinator: This is a comment -->');
   });
 
   it('should write the updated file to a new location / name', () => {

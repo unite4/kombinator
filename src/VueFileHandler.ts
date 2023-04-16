@@ -82,7 +82,7 @@ export class VueFileHandler {
       throw new Error(`No template found in ${this.filePath}`);
     }
     const templateContent = templateMatch[1];
-    const newTemplateContent = templateContent + `\n<!-- Kombinator: ${comment} -->\n`;
+    const newTemplateContent = templateContent + `<!-- Kombinator: ${comment} -->\n`;
     this.newFileContent = this.newFileContent.replace(templateContent, newTemplateContent);
     return this;
   }
