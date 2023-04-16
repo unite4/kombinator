@@ -2,7 +2,7 @@ import { Plugin } from 'rollup';
 import { readdirSync, lstatSync, realpathSync } from 'fs';
 import { emptyDirSync, existsSync } from 'fs-extra';
 import { getWithTemplate, TemplateMod } from './helpers';
-import chokidar from 'chokidar'
+// import chokidar from 'chokidar'
 
 export interface ModsPluginOptions {
   modsDir: string;
@@ -38,11 +38,11 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
   };
 
   //@ts-ignore
-  const chokidarHandler = (event, path) => {
-    console.log(`${event} ${path}`);
-    emptyDirSync(options.componentsDir[0]);
-    executeMods(withTemplate, options.modsDir);
-  }
+  // const chokidarHandler = (event, path) => {
+  //   console.log(`${event} ${path}`);
+  //   emptyDirSync(options.componentsDir[0]);
+  //   executeMods(withTemplate, options.modsDir);
+  // }
   
 
   return {

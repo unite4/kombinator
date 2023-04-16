@@ -1,6 +1,6 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
-import {globSync} from 'glob';
+import { sync as globSync } from 'glob';
 import { Plugin, PluginContext } from 'rollup';
 
 interface CopyComponentsPluginOptions {
