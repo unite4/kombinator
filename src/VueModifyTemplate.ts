@@ -38,8 +38,6 @@ export class VueModifyTemplate extends VueElementFinder {
 
   public renameElement(newTagName: string): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
-    console.log(this.getElementCode())
-    console.log(element)
     const tagNameStartIndex = element.startIndex!;
     const tagNameEndIndex = element.tagNameEndIndex!;
     const newTag = `<${newTagName}`;    
