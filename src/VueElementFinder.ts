@@ -10,8 +10,8 @@ export abstract class VueElementFinder {
   protected template = '';
   protected modifiedCode = '';
 
-  protected findElement(code: string): { element: { startIndex: number; endIndex: number; tagNameStartIndex?: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } } {
-    let element: { startIndex: number; endIndex: number; tagNameStartIndex?: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } | null = null;
+  protected findElement(code: string): { element: { startIndex: number; endIndex: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } } {
+    let element: { startIndex: number; endIndex: number; tagNameEndIndex?: number; closingTagStartIndex?: number; closingTagEndIndex?: number } | null = null;
     if (this.findBy === 'tagName') {
       element = this.findElementByTag(code, element) as { startIndex: number; endIndex: number; tagNameStartIndex: number; tagNameEndIndex: number };
     } else if (this.findBy === 'attributeValue') {
@@ -26,9 +26,9 @@ export abstract class VueElementFinder {
     }
   
     // Find tag name and closing tag indices
-    const { tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } = this.findTagIndices(code, element.startIndex, element.endIndex);
+    const { tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } = this.findTagIndices(code, element.startIndex, element.endIndex);
 
-    return { element: { ...element, tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } };
+    return { element: { ...element, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex } };
     
   }
 
@@ -36,7 +36,6 @@ export abstract class VueElementFinder {
     const stack: { name: string; startIndex: number; endIndex: number }[] = [];
     let tagMatch;
     let closingTagMatch;
-    let tagNameStartIndex: number | undefined;
     let tagNameEndIndex: number | undefined;
     let closingTagStartIndex: number | undefined;
     let closingTagEndIndex: number | undefined;
@@ -53,8 +52,7 @@ export abstract class VueElementFinder {
               closingTagStartIndex = i;
               closingTagEndIndex = closingTagStartIndex + closingTagMatch[0].length;
               if (!stack.length) {
-                tagNameStartIndex = nestedElement.startIndex;
-                tagNameEndIndex = nestedElement.endIndex;
+                tagNameEndIndex = nestedElement.startIndex + nestedElement.name.length + 1;
                 break;
               }
             }
@@ -70,13 +68,8 @@ export abstract class VueElementFinder {
               // Adjust stack to account for self-closing tag
               const nestedElement = stack.pop();
               if (nestedElement) {
-                const closingTagStartIndex = nestedElement.endIndex - 2;
-                const closingTagEndIndex = nestedElement.endIndex;
                 if (!stack.length) {
-                  tagNameStartIndex = nestedElement.startIndex;
-                  tagNameEndIndex = nestedElement.endIndex;
-                  closingTagStartIndex;
-                  closingTagEndIndex;
+                  tagNameEndIndex = nestedElement.startIndex + nestedElement.name.length + 1;
                   break;
                 }
               }
@@ -86,7 +79,7 @@ export abstract class VueElementFinder {
       }
     }
   
-    return { tagNameStartIndex, tagNameEndIndex, closingTagStartIndex, closingTagEndIndex };
+    return { tagNameEndIndex, closingTagStartIndex, closingTagEndIndex };
   }
 
   private findElementByTag(code: string, element: { startIndex: number; endIndex: number; } | null) {

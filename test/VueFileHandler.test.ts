@@ -12,16 +12,16 @@ describe('VueFileHandler', () => {
   beforeAll(() => {
     generatedDir = temp.mkdirSync('generated');
     coreDir = temp.mkdirSync('core');
-    fs.mkdirSync(path.join(coreDir, 'subdirectory'))
-
+    
     // Create a test Vue file in the core directory
     const filePath = path.join(path.join(coreDir, 'subdirectory', 'my-component.vue'));
     const fileContent = '<template>\n<div>Hello world</div>\n</template>';
+    fs.mkdirSync(path.join(coreDir, 'subdirectory'))
     fs.writeFileSync(filePath, fileContent, 'utf8');
   });
 
   afterAll(() => {
-    // temp.cleanupSync();
+    temp.cleanupSync();
   });
 
   it('should load a Vue file from a given location', () => {

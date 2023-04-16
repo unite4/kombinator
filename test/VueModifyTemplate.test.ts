@@ -21,7 +21,7 @@ describe('VueModifyTemplate', () => {
   const templateLine = trimMultilineString(template);
   
 
-  describe('remove', () => {
+  describe('removeElement', () => {
     it('removes the element from the template', () => {
       const expectedTemplate = trimMultilineString(`
         <template>
@@ -32,7 +32,7 @@ describe('VueModifyTemplate', () => {
           </div>
         </template>
       `);
-      const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('h1').remove();
+      const modifier = new VueModifyTemplate().fromTemplate(template).findByTag('h1').removeElement();
       const modifiedTemplate = modifier.getTemplate();
       expect(modifiedTemplate).toBe(expectedTemplate);
     });
@@ -158,6 +158,35 @@ describe('VueModifyTemplate', () => {
       expect(code).toEqual('<p>Hello</p>');
     });
   });  
+
+  describe('renameElement', () => {
+    it('should rename a simple element', () => {
+      const vm = new VueModifyTemplate()
+        .fromTemplate('<div>Hello world</div>')
+        .findByTag('div')
+        .renameElement('span')
+        .getTemplate();
+      expect(vm).toBe('<span>Hello world</span>');
+    });
+
+    it('should rename an element with attributes', () => {
+      const vm = new VueModifyTemplate()
+        .fromTemplate('<div class="my-class" data-id="123">Hello world</div>')
+        .findByTag('div')
+        .renameElement('span')
+        .getTemplate();
+      expect(vm).toBe('<span class="my-class" data-id="123">Hello world</span>');
+    });
+
+    it('should rename a self-closing element', () => {
+      const vm = new VueModifyTemplate()
+        .fromTemplate('<img src="image.jpg" alt="My Image"/>')
+        .findByTag('img')
+        .renameElement('picture')
+        .getTemplate();
+      expect(vm).toBe('<picture src="image.jpg" alt="My Image"/>');
+    });
+  });
 
   describe('possibility to wrap', () => {
     it('shall be possible to wrap few elements', () => {

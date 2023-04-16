@@ -26,7 +26,7 @@ export class VueModifyTemplate extends VueElementFinder {
     return this;
   }
 
-  public remove(): VueModifyTemplate {
+  public removeElement(): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     if (element.closingTagEndIndex) {
       this.modifiedCode = this.modifiedCode.slice(0, element.startIndex) + this.modifiedCode.slice(element.closingTagEndIndex);
@@ -35,6 +35,24 @@ export class VueModifyTemplate extends VueElementFinder {
     }
     return this;
   }
+
+  public renameElement(newTagName: string): VueModifyTemplate {
+    const { element } = this.findElement(this.modifiedCode);
+    console.log(this.getElementCode())
+    console.log(element)
+    const tagNameStartIndex = element.startIndex!;
+    const tagNameEndIndex = element.tagNameEndIndex!;
+    const newTag = `<${newTagName}`;    
+    this.modifiedCode = `${this.modifiedCode.slice(0, tagNameStartIndex)}${newTag}${this.modifiedCode.slice(tagNameEndIndex)}`;
+    if(element.closingTagEndIndex) {
+      const lengthDiff = newTagName.length - element.tagNameEndIndex! + 1;
+      const closingTagStartIndex = element.closingTagStartIndex! + lengthDiff;
+      const closingTagEndIndex = element.closingTagEndIndex! + lengthDiff;
+      const closingTag = `</${newTagName}>`;
+      this.modifiedCode = `${this.modifiedCode.slice(0, closingTagStartIndex)}${closingTag}${this.modifiedCode.slice(closingTagEndIndex)}`;
+    }
+    return this;  
+  }  
 
   private insertHtml(html: string, before: boolean): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
@@ -56,7 +74,7 @@ export class VueModifyTemplate extends VueElementFinder {
 
     if (!element.closingTagStartIndex) {
       // Element is not wrapping -> remove it
-      this.remove();
+      this.removeElement();
       return this;
     }
 
