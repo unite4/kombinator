@@ -52,7 +52,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         emptyDirSync(options.componentsDir[0]);
         initialized = true;
         executeMods(withTemplate, options.modsDir);
-        this.addWatchFile(realpathSync(options.modsDir+"/test1.mod.ts"));
+        
         //chokidar.watch(`${options.modsDir}/**/*.mod.ts`).on('all', chokidarHandler);
         //chokidar.watch(`${options.componentsDir[1]}/**/*.vue`).on('all', chokidarHandler);
       }
