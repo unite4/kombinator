@@ -1,6 +1,6 @@
 {
   "name": "@creativestyle/kombinator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Provides a convenient and easy-to-use API for modifying Vue.js templates, making it easier for developers to create and maintain their Vue.js applications.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,9 +19,11 @@
   "author": "Krzysztof Daniel",
   "license": "MIT",
   "dependencies": {
+    "colorette": "^2.0.20",
     "glob": "^10.1.0",
     "rollup": "^3.20.3",
-    "temp": "^0.9.4"
+    "temp": "^0.9.4",
+    "vite": "^4.2.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.0",
