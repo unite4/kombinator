@@ -7,9 +7,9 @@ export type TemplateMod = (filenameIn: string) => {
   saveModifiedTemplate: (filenameOut?: string) => void
 };
 
-export const getWithTemplate = (dirs: string[]): TemplateMod => {
+export const getWithComponent = (dirs: string[]): TemplateMod => {
 
-  const withTemplate = (filenameIn: string) => {
+  const withComponent = (filenameIn: string) => {
     const fileHandler = new VueFileHandler(dirs);  
     let extraComment: string |  null = null; 
     if(filenameIn.endsWith('.vue')) {
@@ -46,6 +46,6 @@ export const getWithTemplate = (dirs: string[]): TemplateMod => {
   
   }
 
-  return withTemplate
+  return withComponent
 
 }
