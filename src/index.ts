@@ -3,7 +3,7 @@ import executeMods from './rollup-plugin-execute-mods';
 import copyFromParent from './rollup-plugin-nuxt-copy-from-parent';
 import { VueModifyTemplate } from './VueModifyTemplate';
 import { VueFileHandler } from './VueFileHandler';
-import { TemplateMod, getWithTemplate } from './helpers';
+import { TemplateMod, getWithComponent } from './helpers';
 
 export {
   copyComponents,
@@ -11,6 +11,6 @@ export {
   copyFromParent,
   VueModifyTemplate,
   VueFileHandler,
-  getWithTemplate,
+  getWithComponent,
   TemplateMod
 }

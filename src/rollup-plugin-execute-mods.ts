@@ -1,7 +1,7 @@
 import { Plugin } from 'rollup';
 import { readdirSync, lstatSync, realpathSync } from 'fs';
 import { emptyDirSync, existsSync } from 'fs-extra';
-import { getWithTemplate, TemplateMod } from './helpers';
+import { getWithComponent, TemplateMod } from './helpers';
 // import chokidar from 'chokidar'
 
 export interface ModsPluginOptions {
@@ -28,7 +28,7 @@ function executeMods(callback: TemplateMod, dirPath: string): void {
 }
 
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
-  const withTemplate = getWithTemplate(options.componentsDir);
+  const withTemplate = getWithComponent(options.componentsDir);
   let initialized = false;
 
   const onWatchChange = (id: string) => {
