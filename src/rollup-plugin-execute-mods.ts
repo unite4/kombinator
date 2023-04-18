@@ -4,6 +4,7 @@ import { emptyDirSync, existsSync } from 'fs-extra';
 import { getWithComponent, TemplateMod } from './helpers';
 import { green, yellow } from 'colorette'
 import path from 'path';
+import VueFileHandler from './VueFileHandler';
 
 
 export interface ModsPluginOptions {
@@ -16,6 +17,17 @@ export interface ModsPluginOptions {
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
 
   const withComponent = getWithComponent(options.componentsDir);
+  // const touched: string[] = [];
+  // const extendedWithComponent:TemplateMod = (name)=> {
+  //   // This will remember touched files
+  //   let filePath = new VueFileHandler(options.componentsDir).load(name).getFullPath();
+  //   if(!touched.includes(filePath!)) {
+  //     touched.push(name);
+
+  //   }
+  //   return withComponent(name);
+  // }
+
   let initialized = false;
 
   // const onWatchChange = (id: string) => {

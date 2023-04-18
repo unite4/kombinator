@@ -12,11 +12,7 @@ export const getWithComponent = (dirs: string[]): TemplateMod => {
   const withComponent = (filenameIn: string) => {
     const fileHandler = new VueFileHandler(dirs);  
     let extraComment: string |  null = null; 
-    if(filenameIn.endsWith('.vue')) {
-      fileHandler.loadVueFile(filenameIn);
-    } else {
-      fileHandler.loadComponent(filenameIn);
-    }
+    fileHandler.load(filenameIn);
     const template = fileHandler.getTemplateAsString();
     const templateModificator = new VueModifyTemplate().fromTemplate(template);
   

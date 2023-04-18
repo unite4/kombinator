@@ -1,39 +1,40 @@
 import { VueElementFinder } from "./VueElementFinder";
+import { VueModifyTemplate } from "./VueModifyTemplate";
 
 export class VueModifyAttributes extends VueElementFinder {
-  public fromTemplate(template: string): VueModifyAttributes {
+  public fromTemplate(template: string): VueModifyAttributes | VueModifyTemplate {
     super.fromTemplate(template);
     return this;
   }
 
-  public findByTag(tagName: string): VueModifyAttributes {
+  public findByTag(tagName: string): VueModifyAttributes | VueModifyTemplate {
     super.findByTag(tagName);
     return this;
   }
 
-  public findByAttribute(name: string): VueModifyAttributes {
+  public findByAttribute(name: string): VueModifyAttributes | VueModifyTemplate {
     super.findByAttribute(name);
     return this;
   }
 
-  public findByAttributeValue(name: string, value: string): VueModifyAttributes {
+  public findByAttributeValue(name: string, value: string): VueModifyAttributes | VueModifyTemplate {
     super.findByAttributeValue(name,value);
     return this;
   }
 
-  public findFirst(): VueModifyAttributes {
+  public findFirst(): VueModifyAttributes | VueModifyTemplate {
     super.findFirst()
     return this;
   }  
 
-  public removeAttribute(name: string): VueModifyAttributes {
+  public removeAttribute(name: string): VueModifyAttributes | VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     const modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex).replace(new RegExp(` ${name}="([^"]*)?"`, 'g'), '').trim();
     this.modifiedCode = this.modifiedCode.slice(0, element.startIndex) + modifiedElement + this.modifiedCode.slice(element.endIndex);
     return this;
   }
   
-  public reduceAttribute(name: string, value: string): VueModifyAttributes {    
+  public reduceAttribute(name: string, value: string): VueModifyAttributes | VueModifyTemplate {    
     const { element } = this.findElement(this.modifiedCode);
     let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
     modifiedElement = modifiedElement.replace(new RegExp(` ${name}="([^"]*)"?`, 'g'), (match, p1) => {
@@ -45,7 +46,7 @@ export class VueModifyAttributes extends VueElementFinder {
     return this;
   }
 
-  public regexpAttribute(name: string, regexp: RegExp, replace: string): VueModifyAttributes {
+  public regexpAttribute(name: string, regexp: RegExp, replace: string): VueModifyAttributes | VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
     modifiedElement = modifiedElement.replace(new RegExp(` ${name}="([^"]*)"?`), (match, p1) => {
@@ -58,7 +59,7 @@ export class VueModifyAttributes extends VueElementFinder {
     return this;
   }
 
-  public extendAttribute(name: string, value: string, glue = ' '): VueModifyAttributes {
+  public extendAttribute(name: string, value: string, glue = ' '): VueModifyAttributes | VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
     modifiedElement = modifiedElement.replace(new RegExp(` ${name}="([^"]*)"?`, 'g'), (match, p1) => {
@@ -79,7 +80,7 @@ export class VueModifyAttributes extends VueElementFinder {
     return this;
   }  
   
-  public setAttribute(name: string, value: string): VueModifyAttributes {
+  public setAttribute(name: string, value: string): VueModifyAttributes | VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
     const existingAttributeRegex = new RegExp(`\\s${name}="[^"]*"`);
