@@ -1,6 +1,6 @@
 {
   "name": "@creativestyle/kombinator",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "Provides a convenient and easy-to-use API for modifying Vue.js templates, making it easier for developers to create and maintain their Vue.js applications.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "theme",
     "rollup-plugin"
   ],
-  "author": "Krzysztof Daniel",
+  "author": "Krzysztof Daniel / creativestyle / ChatGPT",
   "license": "MIT",
   "dependencies": {
     "colorette": "^2.0.20",

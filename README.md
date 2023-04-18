@@ -8,12 +8,147 @@ Once the base project and customization layer are created, the tool combines the
 
 The resulting product is then ready for testing and deployment, either on a local machine or in a production environment. The customization layer can be easily swapped out or modified as needed, allowing for rapid iteration and customization of the underlying Nuxt 3 application.
 
-## Known limitations
 
-There are a few challenges that were not able to solve now. Feel free to contribute!
-- This file watches changes only on existing .mod.ts files, if you add .mod.ts file you need to restart your dev/watch process. 
+# API - functions you can use in mod files
 
-## History associated with the name
+#### `fromTemplate(template: string)`
+
+Sets the template to be modified.
+
+#### `getTemplate(): string`
+
+Gets the modified template.
+
+## Finding element (tag)
+
+Before modifying elements you need to find proper element with simplified selectors.
+
+#### `findByTag(tagName: string)`
+
+Finds the first element with given tag
+
+#### `findByAttribute(name: string)`
+
+Finds the first tag in the template with given attribute
+
+#### `findByAttributeValue(name: string, value: string)`
+
+Finds the first tag in the template with given attribute having given value
+
+#### `findFirst(): VueElementFinder`
+
+Finds first element in the template
+
+#### `getTemplate(): string`
+
+Gets the modified template.
+
+## Modification of attributes
+
+#### `removeAttribute(name: string)`
+
+Removes an attribute with the given `name` from the HTML element found by `find*()`. 
+
+#### `reduceAttribute(name: string, value: string)`
+
+Reduces the value of an attribute with the given `name` by removing the given `value` from it. 
+
+#### `regexpAttribute(name: string, regexp: RegExp, replace: string)`
+
+Replaces the value of an attribute with the given `name` by applying the given regular expression `regexp` and replacement `replace` on it.
+
+#### `extendAttribute(name: string, value: string, glue = ' ')`
+
+Extends the value of an attribute with the given `name` by appending the given `value` to it with the given `glue` separator. If the attribute does not exist, it will be added to the HTML element. 
+
+#### `setAttribute(name: string, value: string)`
+
+Sets the value of an attribute with the given `name` to the given `value`. If the attribute already exists, its value will be replaced. Otherwise, the attribute will be added to the HTML element.
+
+### Example Usage
+
+```javascript
+import { VueModifyTemplate } from "@creativestyle/kombinator";
+
+const code = `
+  <div class="foo" id="bar" v-if="isTrue" v-for="item in items">{{ item }}</div>
+`;
+
+const modifier = new VueModifyTemplate(code);
+
+modifier
+  .findByTag('div')
+  .removeAttribute('id')
+  .reduceAttribute('class', 'foo')
+  .regexpAttribute('v-if', /isTrue/g, 'show')
+  .extendAttribute('class', 'baz')
+  .setAttribute('data-foo', 'bar');
+
+const modifiedCode = modifier.getModifiedCode();
+console.log(modifiedCode);
+
+// Output:
+// <div class="baz" v-show="true" v-for="item in items" data-foo="bar">{{ item }}</div>
+```
+## Modification of tags
+
+## VueModifyTemplate
+
+#### `removeElement()`
+
+Removes the entire element (including its contents) currently selected by the class instance.
+
+#### `renameElement(newTagName: string)`
+
+Renames the tag name of the element currently selected by the class instance to `newTagName`.
+
+#### `insertBefore(html: string)`
+
+Inserts the HTML code `html` before the element currently selected by the class instance.
+
+#### `insertAfter(html: string)`
+
+Inserts the HTML code `html` after the element currently selected by the class instance.
+
+#### `unwrap()`
+
+Removes the current element's tag but retains its contents.
+
+#### `getElementCode(): string`
+
+Returns the HTML code for the element currently selected by the class instance.
+
+#### `insertInside(html: string)`
+
+Inserts the HTML code `html` inside the element currently selected by the class instance.
+
+### Usage
+
+```javascript
+import { VueModifyTemplate } from "./VueModifyTemplate";
+
+const template = `
+  <template>
+    <div id="main">
+      <p>Hello world</p>
+    </div>
+  </template>
+`;
+
+const vm = new VueModifyTemplate();
+vm.fromTemplate(template).findByTag("div").renameElement("section").insertAfter("<p>New element</p>");
+const modifiedTemplate = vm.getTemplate();
+console.log(modifiedTemplate);
+
+// Output: 
+// <template>
+//   <section id="main">
+//     <p>Hello world</p><p>New element</p>
+//   </section>
+// </template>
+```
+
+# History associated with the name
 
 The Polish word *kombinator* refers to a person who is crafty, resourceful, and skilled at finding solutions to problems through creative thinking, often using unconventional or cunning methods. It can have a slightly negative connotation and may be used to describe someone who is overly scheming or manipulative.
 
@@ -24,6 +159,13 @@ Under such a system, being a *kombinator* was often necessary for survival. Peop
 Additionally, the government often interfered in people's personal lives, limiting their freedoms and restricting their ability to pursue their goals. Being a *kombinator* allowed individuals to find ways to circumvent these restrictions and pursue their interests and ambitions.
 
 Therefore, being a *kombinator* was often necessary during the PRL times to navigate the challenging economic and social conditions and to find ways to improve one's quality of life.
+
+# Postscript
+
+## Known limitations
+
+There are a few challenges that were not able to solve now. Feel free to contribute!
+- This file watches changes only on existing .mod.ts files, if you add .mod.ts file you need to restart your dev/watch process. 
 
 ### Why this plugin duplicates some features of other plugins
 

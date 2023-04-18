@@ -94,9 +94,3 @@ export class VueModifyAttributes extends VueElementFinder {
   }
     
 }
-
-export default function attr() {
-  return new VueModifyAttributes();
-}
-
-
