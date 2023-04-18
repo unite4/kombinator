@@ -125,7 +125,7 @@ Inserts the HTML code `html` inside the element currently selected by the class 
 ### Usage
 
 ```javascript
-import { VueModifyTemplate } from "./VueModifyTemplate";
+import { VueModifyTemplate } from "@creativestyle/kombinator";
 
 const template = `
   <template>
@@ -136,15 +136,21 @@ const template = `
 `;
 
 const vm = new VueModifyTemplate();
-vm.fromTemplate(template).findByTag("div").renameElement("section").insertAfter("<p>New element</p>");
+vm.fromTemplate(template)
+  .findByTag("div")
+  .renameElement("section")
+  .insertAfter("<p>New element</p>")
+  .findByAttribute("id")
+  .insertBefore('<span>');
+  .insertAfter('</span><some-component :foo="ok"/>');
 const modifiedTemplate = vm.getTemplate();
 console.log(modifiedTemplate);
 
 // Output: 
 // <template>
-//   <section id="main">
+//   <span><section id="main">
 //     <p>Hello world</p><p>New element</p>
-//   </section>
+//   </section></span><some-component :foo="ok"/>
 // </template>
 ```
 
