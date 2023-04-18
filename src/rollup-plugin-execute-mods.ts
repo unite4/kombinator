@@ -10,14 +10,14 @@ export interface ModsPluginOptions {
   verbose: boolean;
 }
 
-
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
 
   const withComponent = getWithComponent(options.componentsDir);
   let initialized = false;
 
-  function executeMods(callback: TemplateMod, dirPath: string): void {  
-    if(!existsSync(dirPath)) return;
+  function executeMods(callback: TemplateMod, dirPath: string): string[] {  
+    const executed: string[] = [];
+    if(!existsSync(dirPath)) return [];
     const files = readdirSync(dirPath).sort();
   
     files.forEach((file) => {
@@ -30,6 +30,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
       } else if (filePath.endsWith('.mod.ts')) {
         const fullFilePath = realpathSync(filePath);
         const mod = require(fullFilePath);
+        executed.push(fullFilePath);
         if(options.verbose) {
           console.log(green(`Processing ${filePath}`))
         }
@@ -41,58 +42,26 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         }
       }
     });
-  }
-/*
-  function emptyFiles(dirPath: string): void {
-    const files = readdirSync(dirPath);
-    for (const file of files) {
-      const filePath = path.join(dirPath, file);
-      if (lstatSync(filePath).isDirectory()) {
-        emptyFiles(filePath); // recurse into subdirectories
-      } else {
-        writeFileSync(filePath, '<template></template>');
-      }
-    }
+    return executed;
   }
 
-  function removeEmptyFiles(this: Plugin, dirPath: string): void {
-    const files = readdirSync(dirPath);
-    for (const file of files) {
-      const filePath = path.join(dirPath, file);
-      if (lstatSync(filePath).isDirectory()) {
-        removeEmptyFiles.call(this, filePath); // recurse into subdirectories
-      } else {
-        const content = readFileSync(filePath, 'utf8');
-        if (content.trim() === '<template></template>') {
-          if(options.verbose) {
-            console.log(yellow(`${filePath} is empty - removing`))
-          }                    
-          unlinkSync(filePath);
-        }
-      }
-    }
-  } 
-*/
   return {
     name: 'mods-plugin',
     buildStart: {
       order: "pre",
       handler() {
         if(!initialized) {
-          //emptyFiles(options.componentsDir[0]);
           emptyDirSync(options.componentsDir[0]);
           initialized = true;
-          executeMods(withComponent, options.modsDir);
-          //removeEmptyFiles.call(this, options.componentsDir[0]);
+          executeMods(withComponent, options.modsDir).forEach(file => this.addWatchFile(file));
         }        
       }
     },
-
-    // async handleHotUpdate({ file, server }) {      
-    //   if (file.endsWith('.mod.ts')) {
-    //     emptyDirSync(options.componentsDir[0]);
-    //     executeMods.call(this, withComponent, options.modsDir);
-    //   }    
-    // },
+    async handleHotUpdate({ file, server }) {      
+      if (file.endsWith('.mod.ts')) {
+        emptyDirSync(options.componentsDir[0]);
+        executeMods.call(this, withComponent, options.modsDir);
+      }    
+    },
   };
 }
