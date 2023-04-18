@@ -60,6 +60,17 @@ export class VueFileHandler {
     return this;
   }
 
+  load(filenameIn: string): VueFileHandler {
+    if(filenameIn.endsWith('.vue')) {
+      return this.loadVueFile(filenameIn);
+    } 
+    return  this.loadComponent(filenameIn);
+  }
+
+  getFullPath():string | null {
+    return this.filePath ? fs.realpathSync(this.filePath) : null;
+  }
+
   getTemplateAsString(): string {
     const templateMatch = this.fileContent?.match(/<template>([\s\S]*)<\/template>/);
     if (!templateMatch) {
