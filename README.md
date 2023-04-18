@@ -65,6 +65,10 @@ Extends the value of an attribute with the given `name` by appending the given `
 
 Sets the value of an attribute with the given `name` to the given `value`. If the attribute already exists, its value will be replaced. Otherwise, the attribute will be added to the HTML element.
 
+#### `getAttributeValue(name: string, value: string): string`
+
+Gets the value of an attribute with the given `name`. If the attribute does not exist, its value will be "". Usefull for optimization of  classes, e.g. with tailwind-merge.
+
 ### Example Usage
 
 ```javascript
@@ -91,8 +95,6 @@ console.log(modifiedCode);
 // <div class="baz" v-show="true" v-for="item in items" data-foo="bar">{{ item }}</div>
 ```
 ## Modification of tags
-
-## VueModifyTemplate
 
 #### `removeElement()`
 
@@ -166,7 +168,7 @@ Additionally, the government often interfered in people's personal lives, limiti
 
 Therefore, being a *kombinator* was often necessary during the PRL times to navigate the challenging economic and social conditions and to find ways to improve one's quality of life.
 
-# Postscript
+# Other things
 
 ## Known limitations
 
@@ -180,7 +182,7 @@ This plugin has some *minor functions* that can be achieved also by plugins like
 - We need only a small subset of functionalities, and we do not want to pull a huge pile of dependencies.
 - At some point if those alternative plugins will be better maintained we will kick out this functionality from here.
 
-The main purpose of this plugin is to deliver convenient API for automated modification/pathing of the base project, not copying files around.
+The main purpose of this plugin is to deliver convenient API for automated modification/patching of the base project, not copying files around.
 
 ### Chapeau bas to AI
 *Parts of this plugin its documentation and tests are written with the support of Chat GPT3.5*

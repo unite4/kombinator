@@ -328,6 +328,23 @@ describe('VueModifyTemplate', () => {
     });
   });
   
+  describe('getAttributeValue', () => {
+    it('gets the value of attribute', () => {
+      const template = '<div class="m-10\np-10" id="bar"></div>';
+      const expected = 'm-10\np-10';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('id').getAttributeValue('class');      
+      expect(result).toEqual(expected);
+      
+    });
+
+    it('gets the empty value of non set attribute', () => {
+      const template = '<div id="bar"></div>';
+      const expected = '';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('id').getAttributeValue('class');
+      expect(result).toEqual(expected);      
+    });
+  });
+
   describe('reduceAttribute', () => {
     it('reduces the value of an existing attribute', () => {
       const template = '<div class="foo bar"></div>';

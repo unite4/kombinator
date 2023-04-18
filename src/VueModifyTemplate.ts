@@ -92,6 +92,14 @@ export class VueModifyTemplate extends VueElementFinder {
     return this;
   }
 
+  public getAttributeValue(name: string): string {
+    const { element } = this.findElement(this.modifiedCode);
+    let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
+    const match = modifiedElement.match(new RegExp(` ${name}="([^"]*)"?`));
+    console.dir(modifiedElement)
+    return match ? match[1] : "";    
+  }  
+
   public removeElement(): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
     if (element.closingTagEndIndex) {
