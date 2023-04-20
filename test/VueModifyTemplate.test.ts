@@ -399,6 +399,26 @@ describe('VueModifyTemplate', () => {
     
   });
 
+  describe('transformAttributeValue', () => {
+    it('should transform the attribute value with the provided callback', () => {
+      const template = '<div class="example"></div>';
+      const vm = new VueModifyTemplate().fromTemplate(template).findFirst();
+
+      vm.transformAttributeValue('class', (value) => value + ' new-class');
+
+      expect(vm.getElementCode()).toBe('<div class="example new-class"></div>');
+    });
+
+    it('should remove the attribute if the callback returns null', () => {
+      const template = '<div class="example"></div>';
+      const vm = new VueModifyTemplate().fromTemplate(template).findFirst();
+
+      vm.transformAttributeValue('class', () => null);
+
+      expect(vm.getElementCode()).toBe('<div></div>');
+    });
+  });
+
   describe('regexpAttribute', () => {
     it('replaces attribute value with regular expression', () => {
       const template = '<some-component data-for="money"></some-component>';

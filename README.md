@@ -39,10 +39,6 @@ Finds the first tag in the template with given attribute having given value
 
 Finds first element in the template
 
-#### `getTemplate(): string`
-
-Gets the modified template.
-
 ## Modification of attributes
 
 #### `removeAttribute(name: string)`
@@ -60,6 +56,12 @@ Replaces the value of an attribute with the given `name` by applying the given r
 #### `extendAttribute(name: string, value: string, glue = ' ')`
 
 Extends the value of an attribute with the given `name` by appending the given `value` to it with the given `glue` separator. If the attribute does not exist, it will be added to the HTML element. 
+
+#### `transformAttributeValue(name: string, callback: AttributeTransformer)`
+
+The method is used to modify the value of an attribute of an element using a callback function.
+
+- `callback` (AttributeTransformer): A function that takes the current value of the attribute as input and returns either a new value or `null` if the attribute should be removed
 
 #### `setAttribute(name: string, value: string)`
 

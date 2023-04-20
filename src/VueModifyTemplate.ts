@@ -1,5 +1,7 @@
 import { VueElementFinder } from "./VueElementFinder";
 
+export type AttributeTransformer = (value: string) => string | null;
+
 export class VueModifyTemplate extends VueElementFinder {
   public fromTemplate(template: string): VueModifyTemplate {
     super.fromTemplate(template);
@@ -97,6 +99,17 @@ export class VueModifyTemplate extends VueElementFinder {
     let modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex);
     const match = modifiedElement.match(new RegExp(` ${name}="([^"]*)"?`));
     return match ? match[1] : "";    
+  }  
+
+  public transformAttributeValue(name: string, callback: AttributeTransformer): VueModifyTemplate {
+    const currentValue = this.getAttributeValue(name);
+    const newValue = callback(currentValue);
+    if(newValue === null) {
+      this.removeAttribute(name)
+    } else {
+      this.setAttribute(name, newValue);
+    } 
+    return this;
   }  
 
   public removeElement(): VueModifyTemplate {
