@@ -11,6 +11,7 @@ export interface ModsPluginOptions {
   localComponentsDir: string;
   componentsDir: string[];
   verbose: boolean;
+  tags:string[]
 }
 
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
@@ -73,7 +74,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         const fileHandler = new VueFileHandler(options.componentsDir).loadVueFile(componentFileName);
         const componentFilePath = fileHandler.getFullPath();
 
-        const newCode = new VueCombinedTagLoader().loadComponent(componentFilePath!, modFilePath).getCode();
+        const newCode = new VueCombinedTagLoader().setTag(options.tags).loadComponent(componentFilePath!, modFilePath).getCode();
         fileHandler.setNewFileContent(newCode);
         fileHandler.addTemplateComment("Applied vue mod " + filePath);
         fileHandler.write();
