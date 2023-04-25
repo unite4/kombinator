@@ -19,6 +19,7 @@
   "author": "Krzysztof Daniel / creativestyle / ChatGPT",
   "license": "MIT",
   "dependencies": {
+    "chokidar": "^3.5.3",
     "colorette": "^2.0.20",
     "glob": "^10.1.0",
     "rollup": "^3.20.3",
