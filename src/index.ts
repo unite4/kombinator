@@ -1,4 +1,4 @@
-import copyComponents from './rollup-plugin-copy-components';
+import copyComponents from './vite-plugin-copy-components';
 import executeMods from './vite-plugin-execute-mods';
 import copyFromParent from './rollup-plugin-nuxt-copy-from-parent';
 import { VueModifyTemplate, AttributeTransformer } from './VueModifyTemplate';

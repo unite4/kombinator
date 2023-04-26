@@ -1,9 +1,9 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { globSync } from 'glob';
-import { Plugin, PluginContext } from 'rollup';
+import { Plugin } from 'vite';
+import { PluginContext } from 'rollup';
 import { green } from 'colorette';
-import chokidar from 'chokidar';
 
 interface CopyComponentsPluginOptions {
   sourceDirectories: string[];
@@ -20,14 +20,6 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
     }
     fsExtra.ensureDirSync(path.dirname(targetFile));
     fsExtra.copyFileSync(sourceFile, targetFile);
-  }
-
-  function removeFile(targetFile: string) {
-    if (options.verbose) {
-      console.log(green(`Removing ${targetFile}`));
-    }
-    fsExtra.ensureDirSync(path.dirname(targetFile));
-    fsExtra.unlink(targetFile);
   }
 
   function copyFiles(this: PluginContext) {
@@ -48,23 +40,6 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
     }
   }
 
-  function watchFiles(this: PluginContext) {
-    chokidar
-      .watch(options.sourceDirectories, {
-        ignoreInitial: true,
-      })
-      .on('all', (event, sourceFile) => {
-        const targetFileName = path.basename(sourceFile);
-        const targetFile = path.join(options.targetDirectory, targetFileName);
-
-        if (event === 'add' || event === 'change') {
-          copyFile(sourceFile, targetFile);
-        } else if (event === 'unlink') {
-          removeFile(targetFile);
-        }
-      });
-  }
-
   return {
     name: 'copy-components-plugin',
     buildStart: {
@@ -72,10 +47,25 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
       handler() {
         if (!initialized) {
           copyFiles.call(this);
-          watchFiles.call(this);
           initialized = true;
         }
       },
+    },
+    // TODO: temporary solution, to be refactored
+    handleHotUpdate({ file: sourceFile }) {
+      const isFromSourceDirectory = options.sourceDirectories
+        .map((directory) => {
+          const sourceDirectoryPath = path.join(process.cwd(), directory);
+          return sourceFile.startsWith(sourceDirectoryPath);
+        })
+        .some(Boolean);
+
+      if (isFromSourceDirectory) {
+        const targetFileName = path.basename(sourceFile);
+        const targetFile = path.join(options.targetDirectory, targetFileName);
+
+        copyFile(sourceFile, targetFile);
+      }
     },
   };
 }
