@@ -21,11 +21,11 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
       console.log(green(`Copying ${sourceFile} to ${targetFile}`));
     }
     fsExtra.ensureDirSync(path.dirname(targetFile));
-    fsExtra.copyFileSync(sourceFile, targetFile);
+    fsExtra.copySync(sourceFile, targetFile);
   }
 
   function copyFiles(this: PluginContext) {
-    // Copy each component file from the source directories to the target directory
+    // Copy each file from the source directories to the target directory
     for (const sourceDirectory of options.sourceDirectories.reverse()) {
       const sourceFiles = globSync(`${sourceDirectory}/${options.pattern}`);
       if (!sourceFiles || sourceFiles.length === 0) {
