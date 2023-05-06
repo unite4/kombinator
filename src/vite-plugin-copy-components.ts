@@ -8,11 +8,13 @@ import { green } from 'colorette';
 interface CopyComponentsPluginOptions {
   sourceDirectories: string[];
   targetDirectory: string;
+  pattern?: string;
   verbose: boolean;
 }
 
 export default function copyComponentsPlugin(options: CopyComponentsPluginOptions): Plugin {
   let initialized = false;
+  options.pattern = options.pattern ?? "**/*.vue"
 
   function copyFile(sourceFile: string, targetFile: string) {
     if (options.verbose) {
@@ -25,7 +27,7 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
   function copyFiles(this: PluginContext) {
     // Copy each component file from the source directories to the target directory
     for (const sourceDirectory of options.sourceDirectories.reverse()) {
-      const sourceFiles = globSync(`${sourceDirectory}/**/*.vue`);
+      const sourceFiles = globSync(`${sourceDirectory}/${options.pattern}`);
       if (!sourceFiles || sourceFiles.length === 0) {
         this.warn(`Source directory ${sourceDirectory} is empty. Skipping.`);
         continue;
