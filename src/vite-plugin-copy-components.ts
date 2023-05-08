@@ -17,11 +17,14 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
   options.pattern = options.pattern ?? "**/*.vue"
 
   function copyFile(sourceFile: string, targetFile: string) {
+    if (fsExtra.statSync(sourceFile).isDirectory()) {
+      return;
+    }
     if (options.verbose) {
       console.log(green(`Copying ${sourceFile} to ${targetFile}`));
     }
     fsExtra.ensureDirSync(path.dirname(targetFile));
-    fsExtra.copySync(sourceFile, targetFile);
+    fsExtra.copyFileSync(sourceFile, targetFile);
   }
 
   function copyFiles(this: PluginContext) {
