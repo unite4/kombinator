@@ -12,7 +12,7 @@ export interface ModsPluginOptions {
   localComponentsDir: string;
   componentsDir: string[];
   verbose: boolean;
-  tags:string[]
+  tags:string[];
 }
 
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
