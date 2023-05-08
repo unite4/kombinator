@@ -17,6 +17,9 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
   options.pattern = options.pattern ?? "**/*.vue"
 
   function copyFile(sourceFile: string, targetFile: string) {
+    if (fsExtra.statSync(sourceFile).isDirectory()) {
+      return;
+    }
     if (options.verbose) {
       console.log(green(`Copying ${sourceFile} to ${targetFile}`));
     }
@@ -25,7 +28,7 @@ export default function copyComponentsPlugin(options: CopyComponentsPluginOption
   }
 
   function copyFiles(this: PluginContext) {
-    // Copy each component file from the source directories to the target directory
+    // Copy each file from the source directories to the target directory
     for (const sourceDirectory of options.sourceDirectories.reverse()) {
       const sourceFiles = globSync(`${sourceDirectory}/${options.pattern}`);
       if (!sourceFiles || sourceFiles.length === 0) {
