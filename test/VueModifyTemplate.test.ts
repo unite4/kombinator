@@ -610,6 +610,18 @@ describe('VueModifyTemplate', () => {
         .getTemplate();
       expect(vm).toBe('<picture src="image.jpg" alt="My Image"/>');
     });
+
+    it('should rename nested element', () => {
+      const template = '<div><span></span></div>';
+      const expectedOutput = '<div><div></div></div>';
+      const actualOutput = new VueModifyTemplate()
+        .fromTemplate(template)
+        .findByTag('span')
+        .renameElement('div')
+        .getTemplate();
+
+      expect(actualOutput).toBe(expectedOutput);
+    });
   });
 
   describe('possibility to wrap', () => {
