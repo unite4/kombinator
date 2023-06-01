@@ -129,7 +129,7 @@ export class VueModifyTemplate extends VueElementFinder {
     const newTag = `<${newTagName}`;    
     this.modifiedCode = `${this.modifiedCode.slice(0, tagNameStartIndex)}${newTag}${this.modifiedCode.slice(tagNameEndIndex)}`;
     if(element.closingTagEndIndex) {
-      const lengthDiff = newTagName.length - element.tagNameEndIndex! + 1;
+      const lengthDiff = newTagName.length - (tagNameEndIndex - tagNameStartIndex) + 1;
       const closingTagStartIndex = element.closingTagStartIndex! + lengthDiff;
       const closingTagEndIndex = element.closingTagEndIndex! + lengthDiff;
       const closingTag = `</${newTagName}>`;
