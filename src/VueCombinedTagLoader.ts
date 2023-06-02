@@ -56,7 +56,7 @@ export class VueCombinedTagLoader {
 
   private extractSrcTag(content: string, tag: string): { fullTag?: string; content?: string; openTag?: string; operation?: string } {
     // Match tag in content
-    const matches = content.match(`(<${tag}[^>]*?(\\s+kom(?:binator)?="([^"]+)")?\\s*>)([\\s\\S]*?)<\/${tag}>`);
+    const matches = content.match(`(<${tag}[^>]*?([\\s\\S]+kom(?:binator)?="([^"]+)")?[\\s\\S]*?>)([\\s\\S]*?)<\/${tag}>`);
     if (!matches || matches.length < 2) {
       // tag not found
       return {};
