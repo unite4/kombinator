@@ -50,4 +50,15 @@ describe('VueCombinedTagLoader', () => {
     expect(result).toBe('<template><div class="test">Hello world!</div></template><script>console.log(1);\nconsole.log(2);</script><style>.test { color: blue; }</style>');
   });
   
+  test('should replace script and style tags with additional attributes in component source with script and style tags from component mod', () => {
+    const loader = new VueCombinedTagLoader();
+    loader.setTag(['style', 'script']);
+    const componentModPath2 = temp.path({ suffix: '.vue' });
+    fs.writeFileSync(componentModPath2, '<script foo="bar" kombinator="replace" baz>console.log(2);</script><style foo="bar" kombinator="replace" baz>.test { color: blue; }</style>');
+    loader.loadComponent(componentSrcPath, componentModPath2);
+    fs.unlinkSync(componentModPath2);
+
+    const result = loader.getCode();
+    expect(result).toBe('<template><div class="test">Hello world!</div></template><script>console.log(2);</script><style>.test { color: blue; }</style>');
+  });
 });
