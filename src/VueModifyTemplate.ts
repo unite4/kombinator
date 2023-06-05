@@ -30,7 +30,7 @@ export class VueModifyTemplate extends VueElementFinder {
 
   public removeAttribute(name: string): VueModifyTemplate {
     const { element } = this.findElement(this.modifiedCode);
-    const modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex).replace(new RegExp(` ${name}="([^"]*)?"`, 'g'), '').trim();
+    const modifiedElement = this.modifiedCode.slice(element.startIndex, element.endIndex).replace(new RegExp(` ${name}?(="[^"]*")?`, 'g'), '').trim();
     this.modifiedCode = this.modifiedCode.slice(0, element.startIndex) + modifiedElement + this.modifiedCode.slice(element.endIndex);
     return this;
   }

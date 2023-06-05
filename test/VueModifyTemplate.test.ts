@@ -423,7 +423,13 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('class', 'foo').removeAttribute(':some').getTemplate();
       expect(result).toEqual(expected);
     });
-    
+
+    it('removes an attribute without value', () => {
+      const template = '<comp some-attr></comp>';
+      const expected = '<comp></comp>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('some-attr').removeAttribute('some-attr').getTemplate();
+      expect(result).toEqual(expected);
+    });
   });
 
   describe('transformAttributeValue', () => {
