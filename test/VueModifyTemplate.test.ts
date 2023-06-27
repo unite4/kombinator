@@ -157,6 +157,19 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findFirst().setAttribute('id', 'foo').getTemplate();
       expect(result).toBe(expected);
     });
+
+    it('should find the first tag in the template which contains comments', () => {
+      const template = `
+        <!-- Comment -->
+        <component/>
+      `;
+      const expected = `
+        <!-- Comment -->
+        <component id="foo"/>
+      `;
+      const result = new VueModifyTemplate().fromTemplate(template).findFirst().setAttribute('id', 'foo').getTemplate();
+      expect(result).toBe(expected);
+    });
   });
   
   describe('extendAttribute', () => {
