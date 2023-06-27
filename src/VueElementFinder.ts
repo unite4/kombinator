@@ -166,13 +166,13 @@ export abstract class VueElementFinder {
       if (templateEndMatch) {
         const templateEndIndex = templateStartIndex + templateEndMatch.index!;
         const templateCode = code.slice(templateStartIndex, templateEndIndex);
-        const tagMatch = templateCode.match(/<([^>\s/]+)/);
+        const tagMatch = templateCode.match(/<([^!>\s/]+)/);
         if (tagMatch) {
           this.findByOptions = { tagName: tagMatch[1] };
         }
       }
     } else {
-      const tagMatch = code.match(/<([^>\s/]+)/);
+      const tagMatch = code.match(/<([^!>\s/]+)/);
       if (tagMatch) {
         this.findByOptions = { tagName: tagMatch[1] };
       }
