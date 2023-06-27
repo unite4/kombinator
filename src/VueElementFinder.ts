@@ -159,7 +159,7 @@ export abstract class VueElementFinder {
     this.findBy = 'tagName';
     this.findByOptions = {};
     const code = this.modifiedCode;
-    const firstTemplateMatch = code.match(/<template[^>]*>/);
+    const firstTemplateMatch = code.match(/(?<!<(.*)>[\W\w]*)<template[^>]*>/);
     if (firstTemplateMatch) {
       const templateStartIndex = firstTemplateMatch.index! + firstTemplateMatch[0].length;
       const templateEndMatch = code.slice(templateStartIndex).match(/<\/template>/);
