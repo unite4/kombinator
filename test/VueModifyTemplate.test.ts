@@ -142,6 +142,21 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findFirst().setAttribute('id', 'foo').getTemplate();
       expect(result).toBe(expected);
     });
+
+    it('should find the first tag in the template which contains components with another <template> tag', () => {
+      const template = `
+        <component>
+          <template></template>
+        </component>
+      `;
+      const expected = `
+        <component id="foo">
+          <template></template>
+        </component>
+      `;
+      const result = new VueModifyTemplate().fromTemplate(template).findFirst().setAttribute('id', 'foo').getTemplate();
+      expect(result).toBe(expected);
+    });
   });
   
   describe('extendAttribute', () => {
