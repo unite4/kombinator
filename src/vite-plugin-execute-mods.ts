@@ -1,11 +1,12 @@
 import { Plugin } from 'vite';
-import { readdirSync, lstatSync, realpathSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { readdirSync, lstatSync, realpathSync, readFileSync, writeFileSync } from 'fs';
 import { emptyDirSync, existsSync } from 'fs-extra';
 import { getWithComponent, TemplateMod } from './helpers';
 import { green, yellow } from 'colorette'
 import { VueFileHandler } from './VueFileHandler';
 import { VueCombinedTagLoader } from './VueCombinedTagLoader';
 import path from 'path';
+import temp from 'temp';
 
 export interface ModsPluginOptions {
   modsDir: string;
@@ -13,6 +14,25 @@ export interface ModsPluginOptions {
   componentsDir: string[];
   verbose: boolean;
   tags:string[];
+}
+
+// Automatically track and clean up files at exit
+temp.track();
+
+function copyFileToTemp(filePath: string) {
+  if (!existsSync(filePath)) {
+    throw new Error('File does not exist');
+  }
+  
+  // Create a temporary directory
+  const tempDir = temp.mkdirSync('tempDir');
+  const fileName = path.basename(filePath);
+  const tempFilePath = path.join(tempDir, fileName)
+  const data = readFileSync(filePath);
+
+  writeFileSync(tempFilePath, data);
+
+  return tempFilePath;
 }
 
 export default function modsPlugin(options: ModsPluginOptions): Plugin {
@@ -33,8 +53,9 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
         }
         executeMods(callback, filePath);
       } else if (filePath.endsWith('.mod.ts')) {
-        const fullFilePath = realpathSync(filePath);
-        const mod = require(fullFilePath);
+        const fullFilePath = realpathSync(filePath)
+        const tempFilePath = copyFileToTemp(fullFilePath)
+        const mod = require(tempFilePath);
         executed.push(fullFilePath);
         if(options.verbose) {
           console.log(green(`Processing ${filePath}`))
