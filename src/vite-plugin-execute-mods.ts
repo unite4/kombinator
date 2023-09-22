@@ -119,7 +119,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
       }
     },
     async handleHotUpdate({ file, server }) {      
-      const parentComponentsPath = path.join(process.cwd(), options.componentsDir[1])
+      const parentComponentsPath = path.resolve(process.cwd(), options.componentsDir[1])
       const fileIsParentComponent = file.startsWith(parentComponentsPath)
       if (file.endsWith('.mod.ts') || file.endsWith('.mod.vue') || fileIsParentComponent) {
         emptyDirSync(options.componentsDir[0]);
