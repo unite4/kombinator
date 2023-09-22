@@ -61,7 +61,7 @@ export class VueFileHandler {
   }
 
   load(filenameIn: string): VueFileHandler {
-    if(filenameIn.endsWith('.vue')) {
+    if(filenameIn.endsWith('.vue') || filenameIn.includes('/')) {
       return this.loadVueFile(filenameIn);
     } 
     return  this.loadComponent(filenameIn);
