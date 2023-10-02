@@ -28,7 +28,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
           console.log(green(`Reading a directory ${filePath}`))
         }
         executeMods(callback, filePath);
-      } else if (filePath.endsWith('.mod.ts')) {
+      } else if (filePath.endsWith('.gqlmod.ts')) {
         const fullFilePath = realpathSync(filePath);
         const mod = require(fullFilePath);
         executed.push(fullFilePath);
@@ -61,7 +61,7 @@ export default function modsPlugin(options: ModsPluginOptions): Plugin {
     async handleHotUpdate({ file }) {
       const parentComponentsPath = path.join(process.cwd(), options.graphqlDirs[1])
       const fileIsParentComponent = file.startsWith(parentComponentsPath)
-      if (file.endsWith('.mod.ts') || fileIsParentComponent) {
+      if (file.endsWith('.gqlmod.ts') || fileIsParentComponent) {
         emptyDirSync(options.graphqlDirs[0]);
         executeMods(withGraphql, options.modsDir);
       }    

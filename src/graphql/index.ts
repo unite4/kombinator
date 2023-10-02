@@ -1,4 +1,4 @@
-import executeGraphqlMods from './vite-plugin-execute-mods';
+import executeGraphqlMods from './vite-plugin-execute-gqlmods';
 import { GraphqlMod, getWithGraphql } from './helpers';
 import { GraphqlFileHandler } from './GraphqlFileHandler';
 import { GraphqlModificator } from './GraphqlModificator';
