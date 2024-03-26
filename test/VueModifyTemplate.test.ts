@@ -40,6 +40,13 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getElementCode();
       expect(result).toEqual(expected);
     });
+
+    it('finds an element with special Tailwind classes by tag name', () => {
+      const template = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const expected = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getElementCode();
+      expect(result).toEqual(expected);
+    });
   
     it('throws an error if no elements match the tag name', () => {
       const template = '<div class="foo"></div>';
@@ -78,6 +85,13 @@ describe('VueModifyTemplate', () => {
     it('finds an element with the fat arrow function by attribute name', () => {
       const template = '<div class="foo" @click="() => {}"/>';
       const expected = '<div class="foo" @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with special Tailwind classes by tag name', () => {
+      const template = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const expected = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').getElementCode();
       expect(result).toEqual(expected);
     });
@@ -125,6 +139,13 @@ describe('VueModifyTemplate', () => {
     it('finds an element with the fat arrow function by attribute value', () => {
       const template = '<div data-for="money" @click="() => {}"/>';
       const expected = '<div data-for="money" @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with special Tailwind classes by tag name', () => {
+      const template = `<div data-for="money" class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const expected = `<div data-for="money" class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getElementCode();
       expect(result).toEqual(expected);
     });
@@ -204,6 +225,13 @@ describe('VueModifyTemplate', () => {
     it('should find the first tag in the template which contains the fat arrow function', () => {
       const template = '<div @click="() => {}"/>';
       const expected = '<div @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findFirst().getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with special Tailwind classes by tag name', () => {
+      const template = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const expected = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const result = new VueModifyTemplate().fromTemplate(template).findFirst().getElementCode();
       expect(result).toEqual(expected);
     });
@@ -392,32 +420,29 @@ describe('VueModifyTemplate', () => {
       expect(actualOutput).toBe(expectedOutput);
     });
     
-    // Currently not supported. The regexp needs to be modified to allow closing tag > in attributes. Not trivial.
-    
-    // it('adds an attribute to an element with Tailwind selector as a class', () => {
-    //   const template = '<div class="[&>input]:underline"></div>';
-    //   const expectedOutput = '<div class="[&>input]:underline" my-attribute="my value"></div>';
-    //   const actualOutput = new VueModifyTemplate()
-    //     .fromTemplate(template)
-    //     .findByTag('div')
-    //     .setAttribute('my-attribute', 'my value')
-    //     .getTemplate();
+    it('adds an attribute to an element with Tailwind selector as a class', () => {
+      const template = '<div class="[&>input]:underline"></div>';
+      const expectedOutput = '<div class="[&>input]:underline" my-attribute="my value"></div>';
+      const actualOutput = new VueModifyTemplate()
+        .fromTemplate(template)
+        .findByTag('div')
+        .setAttribute('my-attribute', 'my value')
+        .getTemplate();
 
-    //   expect(actualOutput).toBe(expectedOutput);
-    // });
-    
+      expect(actualOutput).toBe(expectedOutput);
+    });
 
-    // it('adds an attribute to a self-closing element with Tailwind selector as a class', () => {
-    //   const template = '<div class="[&>input]:underline" />';
-    //   const expectedOutput = '<div class="[&>input]:underline" my-attribute="my value" />';
-    //   const actualOutput = new VueModifyTemplate()
-    //     .fromTemplate(template)
-    //     .findByTag('div')
-    //     .setAttribute('my-attribute', 'my value')
-    //     .getTemplate();
+    it('adds an attribute to a self-closing element with Tailwind selector as a class', () => {
+      const template = '<div class="[&>input]:underline"/>';
+      const expectedOutput = '<div class="[&>input]:underline" my-attribute="my value"/>';
+      const actualOutput = new VueModifyTemplate()
+        .fromTemplate(template)
+        .findByTag('div')
+        .setAttribute('my-attribute', 'my value')
+        .getTemplate();
 
-    //   expect(actualOutput).toBe(expectedOutput);
-    // });
+      expect(actualOutput).toBe(expectedOutput);
+    });
   });
   
   describe('getAttributeValue', () => {
@@ -721,31 +746,29 @@ describe('VueModifyTemplate', () => {
       expect(actualOutput).toBe(expectedOutput);
     });
 
-    // Currently not supported. The regexp needs to be modified to allow closing tag > in attributes. Not trivial.
+    it('should rename an element with Tailwind selector as a class', () => {
+      const template = '<div class="[&>input]:underline"></div>';
+      const expectedOutput = '<span class="[&>input]:underline"></span>';
+      const actualOutput = new VueModifyTemplate()
+        .fromTemplate(template)
+        .findByTag('div')
+        .renameElement('span')
+        .getTemplate();
 
-    // it('should rename an element with Tailwind selector as a class', () => {
-    //   const template = '<div class="[&>input]:underline"></div>';
-    //   const expectedOutput = '<span class="[&>input]:underline"></span>';
-    //   const actualOutput = new VueModifyTemplate()
-    //     .fromTemplate(template)
-    //     .findByTag('div')
-    //     .renameElement('span')
-    //     .getTemplate();
+      expect(actualOutput).toBe(expectedOutput);
+    });
 
-    //   expect(actualOutput).toBe(expectedOutput);
-    // });
+    it('should rename a self-closing element with Tailwind selector as a class', () => {
+      const template = '<div class="[&>input]:underline"/>';
+      const expectedOutput = '<span class="[&>input]:underline"/>';
+      const actualOutput = new VueModifyTemplate()
+        .fromTemplate(template)
+        .findByTag('div')
+        .renameElement('span')
+        .getTemplate();
 
-    // it('should rename a self-closing element with Tailwind selector as a class', () => {
-    //   const template = '<div class="[&>input]:underline" />';
-    //   const expectedOutput = '<span class="[&>input]:underline" />';
-    //   const actualOutput = new VueModifyTemplate()
-    //     .fromTemplate(template)
-    //     .findByTag('div')
-    //     .renameElement('span')
-    //     .getTemplate();
-
-    //   expect(actualOutput).toBe(expectedOutput);
-    // });
+      expect(actualOutput).toBe(expectedOutput);
+    });
   });
 
   describe('possibility to wrap', () => {
