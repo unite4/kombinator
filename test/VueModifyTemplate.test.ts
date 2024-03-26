@@ -33,6 +33,13 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').extendAttribute('class', 'bar').getTemplate();
       expect(result).toEqual(expected);
     });
+    
+    it('finds an element with the fat arrow function by tag name', () => {
+      const template = '<div @click="() => {}"/>';
+      const expected = '<div @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getElementCode();
+      expect(result).toEqual(expected);
+    });
   
     it('throws an error if no elements match the tag name', () => {
       const template = '<div class="foo"></div>';
@@ -65,6 +72,13 @@ describe('VueModifyTemplate', () => {
       const template = '<div class="foo"></div><div class="foo"></div>';
       const expected = '<div class="foo bar"></div><div class="foo"></div>';
       const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').extendAttribute('class', 'bar').getTemplate();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with the fat arrow function by attribute name', () => {
+      const template = '<div class="foo" @click="() => {}"/>';
+      const expected = '<div class="foo" @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').getElementCode();
       expect(result).toEqual(expected);
     });
   
@@ -105,6 +119,13 @@ describe('VueModifyTemplate', () => {
       const template = '<some-component data-for="money"></some-component><some-component data-for="money"></some-component>';
       const expected = '<some-component data-for="fun"></some-component><some-component data-for="money"></some-component>';
       const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').setAttribute('data-for','fun').getTemplate();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with the fat arrow function by attribute value', () => {
+      const template = '<div data-for="money" @click="() => {}"/>';
+      const expected = '<div data-for="money" @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getElementCode();
       expect(result).toEqual(expected);
     });
   
@@ -178,6 +199,13 @@ describe('VueModifyTemplate', () => {
       `;
       const result = new VueModifyTemplate().fromTemplate(template).findFirst().setAttribute('id', 'foo').getTemplate();
       expect(result).toBe(expected);
+    });
+
+    it('should find the first tag in the template which contains the fat arrow function', () => {
+      const template = '<div @click="() => {}"/>';
+      const expected = '<div @click="() => {}"/>';
+      const result = new VueModifyTemplate().fromTemplate(template).findFirst().getElementCode();
+      expect(result).toEqual(expected);
     });
   });
   

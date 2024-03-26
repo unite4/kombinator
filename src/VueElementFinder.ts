@@ -90,7 +90,7 @@ export abstract class VueElementFinder {
     const regexp = new RegExp(`<${tagName}(?:\\s|\/?>)`);
     const startIndexMatch = code.match(regexp);
     if (startIndexMatch?.index !== undefined) {
-      const endIndexMatch = code.slice(startIndexMatch.index).match(/>/);
+      const endIndexMatch = code.slice(startIndexMatch.index).match(/(?<!=)>/);
       if (endIndexMatch?.index !== undefined) {
         const startIndex = startIndexMatch.index;
         const endIndex = startIndexMatch.index + endIndexMatch.index + 1;
@@ -105,7 +105,7 @@ export abstract class VueElementFinder {
       throw new Error('Invalid find options.');
     }
     const attributeName = this.escapeRegExp(this.findByOptions.attributeName);
-    const regexp = new RegExp(`<[^>]*\\s${attributeName}(?:\\s*=\\s*['"][^'"]*['"])?[^>]*>`);
+    const regexp = new RegExp(`<[^>]*${attributeName}\\s*=?(?:\\s|\\w|[="'@:()>{}\[\]\/\-])*[^<]*>`);
     const match = code.match(regexp);
     if (match?.index !== undefined) {
       const startIndex = match.index;
@@ -121,7 +121,7 @@ export abstract class VueElementFinder {
     }
     const attributeName = this.escapeRegExp(this.findByOptions.attributeName);
     const attributeValue = this.escapeRegExp(this.findByOptions.attributeValue);
-    const regexp = new RegExp(`<[^>]*\\s${attributeName}\\s*=\\s*"${attributeValue}"[^>]*>`);
+    const regexp = new RegExp(`<[^>]*${attributeName}\\s*=\\s*['"]\\s*${attributeValue}\\s*['"](?:\\s|\\w|[="'@:()>{}\[\]\/\-])*[^<]*>`);
     const match = code.match(regexp);
     if (match?.index !== undefined) {
       const startIndex = match.index;
