@@ -63,6 +63,7 @@ export abstract class VueElementFinder {
             const name = tagMatch[1];
             const tagStartIndex = i;
             const tagEndIndex = tagStartIndex + tagMatch[0].length;
+            tagNameEndIndex = tagStartIndex + name.length + 1;
             stack.push({ name, startIndex: tagStartIndex, endIndex: tagEndIndex });
             if (tagMatch[0].endsWith('/>')) {
               // Adjust stack to account for self-closing tag
@@ -90,7 +91,7 @@ export abstract class VueElementFinder {
     const regexp = new RegExp(`<${tagName}(?:\\s|\/?>)`);
     const startIndexMatch = code.match(regexp);
     if (startIndexMatch?.index !== undefined) {
-      const endIndexMatch = code.slice(startIndexMatch.index).match(/(?<!=)>/);
+      const endIndexMatch = code.slice(startIndexMatch.index).match(/(?<![=&])>/);
       if (endIndexMatch?.index !== undefined) {
         const startIndex = startIndexMatch.index;
         const endIndex = startIndexMatch.index + endIndexMatch.index + 1;
