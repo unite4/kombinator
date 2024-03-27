@@ -47,6 +47,13 @@ describe('VueModifyTemplate', () => {
       const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getElementCode();
       expect(result).toEqual(expected);
     });
+
+    it('finds an element with greater than sign by tag name', () => {
+      const template = `<div :class="[counter < '99' ? 'foo' : 'bar']">`;
+      const expected = `<div :class="[counter < '99' ? 'foo' : 'bar']">`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByTag('div').getElementCode();
+      expect(result).toEqual(expected);
+    });
   
     it('throws an error if no elements match the tag name', () => {
       const template = '<div class="foo"></div>';
@@ -89,9 +96,16 @@ describe('VueModifyTemplate', () => {
       expect(result).toEqual(expected);
     });
 
-    it('finds an element with special Tailwind classes by tag name', () => {
+    it('finds an element with special Tailwind classes by attribute name', () => {
       const template = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const expected = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with greater than sign by attribute name', () => {
+      const template = `<div class="foo" :class="[counter < '99' ? 'foo' : 'bar']">`;
+      const expected = `<div class="foo" :class="[counter < '99' ? 'foo' : 'bar']">`;
       const result = new VueModifyTemplate().fromTemplate(template).findByAttribute('class').getElementCode();
       expect(result).toEqual(expected);
     });
@@ -143,9 +157,16 @@ describe('VueModifyTemplate', () => {
       expect(result).toEqual(expected);
     });
 
-    it('finds an element with special Tailwind classes by tag name', () => {
+    it('finds an element with special Tailwind classes by attribute value', () => {
       const template = `<div data-for="money" class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const expected = `<div data-for="money" class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('finds an element with greater than sign by attribute value', () => {
+      const template = `<div data-for="money" :class="[counter < '99' ? 'foo' : 'bar']">`;
+      const expected = `<div data-for="money" :class="[counter < '99' ? 'foo' : 'bar']">`;
       const result = new VueModifyTemplate().fromTemplate(template).findByAttributeValue('data-for', 'money').getElementCode();
       expect(result).toEqual(expected);
     });
@@ -229,9 +250,16 @@ describe('VueModifyTemplate', () => {
       expect(result).toEqual(expected);
     });
 
-    it('finds an element with special Tailwind classes by tag name', () => {
+    it('should find the first tag in the template which contains special Tailwind classes', () => {
       const template = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
       const expected = `<div class="[&>input]:underline after:content-['*'] group-[.is-published_&]/item:visible"/>`;
+      const result = new VueModifyTemplate().fromTemplate(template).findFirst().getElementCode();
+      expect(result).toEqual(expected);
+    });
+
+    it('should find the first tag in the template which contains greater than sign', () => {
+      const template = `<div :class="[counter < '99' ? 'foo' : 'bar']">`;
+      const expected = `<div :class="[counter < '99' ? 'foo' : 'bar']">`;
       const result = new VueModifyTemplate().fromTemplate(template).findFirst().getElementCode();
       expect(result).toEqual(expected);
     });
